@@ -34,9 +34,7 @@ export default {
         this.error = 'The field cannot be empty, please, enter Organization or User name'
       } else {
         try {
-          const response = await User.search({
-            name: this.name
-          })
+          const response = await User.search(this.name)
 
           console.log('User 1 = ', response)
           console.log('User 2 = ', response.data)

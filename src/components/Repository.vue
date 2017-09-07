@@ -1,38 +1,14 @@
 <template>
-  <div class="white elevation-2 mt-2">
-<!--
-    <v-toolbar flat dense class="cyan" dark>
-      <v-toolbar-title>Recently Viewed</v-toolbar-title>
-    </v-toolbar>
-
-    <v-data-table
-      :headers="[{
-        text: 'Title',
-        value: 'title'
-      },{
-        text: 'Artist',
-        value: 'artist'
-      }]"
-      :pagination.sync="pagination"
-      :items="recent"
-    >
-      <template slot="items" scope="props">
-        <td class="text-xs-right">
-          <song-browser-link :value="props.item.title" />
-        </td>
-        <td class="text-xs-right">
-          <song-browser-link :value="props.item.artist" />
-        </td>
-        <td>
-          <router-link :to="{ name: 'song', params: { songId: props.item.id }}">
-            <v-btn dark primary class="cyan">
-              View
-            </v-btn>
-          </router-link>
-        </td>
-      </template>
-    </v-data-table>
--->
+  <div>
+  <h1>Repositories</h1>
+    <div v-for="repo in repos">
+      <a :href="repo.html_url">{{repo.name}}</a> <br />
+      <span v-if="repo.fork">Forked from <a :href="repo.forked_html_url">{{ repo.forked_full_name }}</a> <br /> </span>
+      {{repo.description}} <br />
+      {{repo.stargazers_count}} <br />
+      {{repo.updated_at}} <br />
+      {{repo.language}} <br />
+    </div>
   </div>
 </template>
 
@@ -41,48 +17,56 @@ import Repository from '@/services/Repository'
 export default {
   data () {
     return {
+      repos: []
     }
   },
   methods: {
-    async user () {
-      const response = await Repository.index({
-        name: this.name
-      })
-      console.log(response.data)
+    async fetchRepos () {
+      // let vm = this
+      console.log('name = ', this.name)
+
+      await Repository.index('kottans')
+        .then((response) => {
+          response.data.forEach((repo, index, arr) => {
+            if (repo.fork) {
+              // find forked from
+              this.$http.get(repo.url)
+                .then(function (response) {
+                  const forked = response.data
+                  arr[index]['forked_html_url'] = forked.parent.html_url
+                  arr[index]['forked_full_name'] = forked.parent.full_name
+                })
+            } else {
+              arr[index]['forked_html_url'] = null
+              arr[index]['forked_full_name'] = null
+            }
+
+            // find language
+            this.$http.get(repo.languages_url)
+              .then(function (response) {
+                const language = response.data
+                arr[index]['language'] = Object.keys(language).find(key => language[key] === Math.max(...Object.values(language)))
+              })
+          })
+
+          this.repos = response.data
+          window.response = this.repos
+          // return vm.repos
+        })
+        .then((response) => {
+
+        })
+      // console.log(response)
+
+      console.log('repos = ', this.repos)
     }
   },
-  mounted () {
+  created: function () {
+    this.fetchRepos()
   }
 }
-
-/*
-import SongBrowserLink from '@/components/songs/SongBrowserLink'
-import RecentsService from '@/services/RecentsService'
-
-export default {
-  data () {
-    return {
-      recent: [],
-      pagination: {
-        sortBy: 'date',
-        descending: true
-      }
-    }
-  },
-  components: {
-    SongBrowserLink
-  },
-  async mounted () {
-    if (this.$store.state.isUserLoggedIn) {
-      this.recent = await RecentsService.index()
-    }
-  }
-}
-*/
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>
