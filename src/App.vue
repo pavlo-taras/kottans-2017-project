@@ -1,23 +1,60 @@
 <template>
-  <div id="app">
-    <!-- <img src="./assets/logo.png"> -->
+  <div id="appMain">
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'app'
+  name: 'appMain'
 }
 </script>
 
 <style>
-#app {
+  html {
+    height: 98%;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+@supports (display: grid) {
+
+  body {
+    height: inherit;
+    background-color: #fcfcfc;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+  }
+
+  #appMain {
+    height: inherit;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+  }
+
+  @media (min-width: 650px) {
+    #appMain {
+      width: 649px;
+    }
+  }
+}
+
+#appMain {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  // text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  background-color: #fcfcfc;
+  width: 100%;
+}
+
+select {
+-moz-appearance: show !important;
+-webkit-appearance: show !important;
 }
 </style>

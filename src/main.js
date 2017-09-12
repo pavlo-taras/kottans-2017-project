@@ -5,17 +5,21 @@ import App from './App'
 // import { sync } from 'vuex-router-sync'
 import router from './router'
 import vueResource from 'vue-resource'
-// import store from '@/store/store'
+import { sync } from 'vuex-router-sync'
+import Vuetify from 'vuetify'
+import store from '@/store/store'
 
 Vue.config.productionTip = false
 Vue.use(vueResource)
+Vue.use(Vuetify)
 
-// sync(store, router)
+sync(store, router)
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App }
 })

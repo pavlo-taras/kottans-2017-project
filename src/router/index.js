@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import User from '@/components/User'
-import Repository from '@/components/Repository'
+import Repositories from '@/components/Repositories'
 
 Vue.use(Router)
 
@@ -14,8 +14,8 @@ export default new Router({
     },
     {
       path: '/:name',
-      name: 'Repository',
-      component: Repository
+      name: 'Repositories',
+      component: Repositories
     },
     {
       path: '*',
